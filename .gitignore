@@ -1,4 +1,11 @@
 # Byte-compiled / optimized / DLL files
+
+# Ignore environment variables
+.env
+
+# Ignore Archive folder
+Archive/
+
 __pycache__/
 *.py[codz]
 *$py.class
