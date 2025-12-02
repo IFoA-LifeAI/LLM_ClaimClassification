@@ -100,5 +100,5 @@ Model comparisons
 - main.py                     # Zero-shot + FT classification
 - prepare_openai_finetune.py  # Create train/val/test datasets
 - ft_cod_openai_mini.py       # Fine-tune GPT-4o-mini
-ft_cod_openai.py            # Fine-tune GPT-4o
+- ft_cod_openai.py            # Fine-tune GPT-4o
 
