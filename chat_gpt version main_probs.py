@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on 4th Jan 2026
-
-@author: pbeard
+Hello worllllllllld
 """
 # %%
 from openai import OpenAI
@@ -31,8 +29,8 @@ client = OpenAI()     # uses OPENAI_API_KEY from .env
 max_chunk_size = 12
 sleep_time_between_chunks = 0
 model = "gpt-4o-2024-08-06"
-output_name = "output_openai_gpt_4o_test"
-output_name_csv = "output_openai_gpt_4o_test"
+output_name = "output_openai_gpt_4o_logprobs"
+output_name_csv = "output_openai_gpt_4o_logprobs"
 
 # the options are taken from the following paper...
 # https://pmc.ncbi.nlm.nih.gov/articles/PMC3229033/#:~:text=Current%20smokers%20had%20significantly%20higher,23.93)%2C%20smoking%2Drelated%20cancers
@@ -62,7 +60,7 @@ cod_data, cod_vector = load_cod_data()
 # -------------------------------------------------------------------
 # Prepare chunked prompts
 # -------------------------------------------------------------------
-list_x = list(split_vector(cod_vector, max_chunk_size))[:10]
+list_x = list(split_vector(cod_vector, max_chunk_size))
 prompts_list = [glue_to_json(chunk) for chunk in list_x]
 vectors = range(len(prompts_list))
 
@@ -108,6 +106,15 @@ for i in vectors:
 # -------------------------------------------------------------------
 
 # %%
+
+# This function is making some huge assumptions about the structure so be careful!
+
+# assumes...
+# 1. each open curly brace is a new "guess"
+# 2. the guesses start from the first curly brace
+# 3. the logprobs inside the curly braces contains no noise (i.e. every token is added apart from curly brace themselves)
+
+# ...and kind of nesting in JSON structure will break this
 
 
 def extract_logprobs_assuming_json(token_data):
