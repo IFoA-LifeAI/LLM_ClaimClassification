@@ -86,7 +86,8 @@ for i in vectors:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompts_list[i]},
         ],
-        logprobs=True
+        logprobs=True,
+        temperature=0
     )
 
     # Extract response text
@@ -126,13 +127,21 @@ def extract_logprobs_assuming_json(token_data):
     })
 
     df["open_brace_count"] = df["token"].str.count(r"\{")
+    df["close_brace_count"] = df["token"].str.count(r"\}")
     df["open_brace_cum"] = df["open_brace_count"].cumsum()
+
+    # trim down the df
+    json_start = (df["open_brace_count"] > 0).values.argmax()
+    is_close_brace = (df["close_brace_count"] > 0).values
+    json_end = len(is_close_brace) - is_close_brace[::-1].argmax() - 1
+    df = df.iloc[json_start:json_end,]
+
     # zeroise logprobs for curly brackets as they can false distort
     df["logprob"] = df["logprob"].where(
         (df["token"].str.count(r"\{") + df["token"].str.count(r"\}")) == 0,
         0
     )
-    lp = df.groupby("open_brace_cum")["logprob"].sum("logprob")[1:].values
+    lp = df.groupby("open_brace_cum")["logprob"].sum("logprob").values
     return lp
 
 
